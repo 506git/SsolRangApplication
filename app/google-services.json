@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "236669707553",
+    "project_id": "ssolrangapplication",
+    "storage_bucket": "ssolrangapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236669707553:android:56029d7e8fbb566dcaca60",
+        "android_client_info": {
+          "package_name": "com.example.ssolrangapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236669707553-9lcubp193jku39btv7rvlv5ug6f8quce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsv0u28FNM0EvOs-sDv0uheUf2Mx2iaec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236669707553-9lcubp193jku39btv7rvlv5ug6f8quce.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
