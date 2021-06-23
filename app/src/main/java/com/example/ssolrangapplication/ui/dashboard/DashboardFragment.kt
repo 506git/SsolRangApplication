@@ -29,14 +29,11 @@ class DashboardFragment : Fragment() {
             viewModel = dashboardViewModel
             lifecycleOwner = viewLifecycleOwner
         }
-
-
-
-//        val root = inflater.inflate()
-//        val textView: TextView = root.findViewById(R.id.text_dashboard)
-//        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
+        initView()
         return binding.root
+    }
+
+    private fun initView(){
+
     }
 }
