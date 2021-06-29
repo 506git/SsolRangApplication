@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.service.autofill.UserData
 import android.text.TextUtils
 import android.util.Log
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.ssolrangapplication.common.model.UserModel
 import com.google.android.gms.auth.api.credentials.IdToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -87,7 +89,9 @@ class SplashActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?){
         if (user != null) {
+            val userInf: UserModel = UserModel(auth.currentUser?.displayName.toString(), auth.currentUser?.email.toString(), auth.currentUser?.photoUrl.toString())
             Intent(this, MainActivity::class.java).apply {
+                this.putExtra("userInf",userInf)
                 startActivity(this)
                 finish()
             }

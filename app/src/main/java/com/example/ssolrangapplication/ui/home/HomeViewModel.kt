@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.ssolrangapplication.common.BaseViewModel
 import com.example.ssolrangapplication.network.NetworkRepository
 
-class HomeViewModel(private val repository: NetworkRepository) : BaseViewModel() {
+class HomeViewModel() : BaseViewModel() {
 
 //    private val test = ObservableField<String>("")
     private val _text = MutableLiveData<String>().apply {

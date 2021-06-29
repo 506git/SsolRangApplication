@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SsolRangApplication</string>
     <string name="title_activity_main2">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">홈</string>
+    <string name="title_dashboard">목록</string>
+    <string name="title_notifications">설정</string>
 </resources>

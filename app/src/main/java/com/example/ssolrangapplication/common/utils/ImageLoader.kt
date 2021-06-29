@@ -14,6 +14,9 @@ class ImageLoader(private val context: Context) {
     fun imageLoadWithURL(url: String, v: ImageView){
         Glide.with(this.context).load(url).into(v)
     }
+    fun imageCircleLoadWithURL(url: String, v: ImageView){
+        Glide.with(this.context).load(url).circleCrop().into(v)
+    }
 
     fun imageLoadWithFilePath(filePath: String, v: ImageView){
         Glide.with(this.context).load(filePath).into(v)
