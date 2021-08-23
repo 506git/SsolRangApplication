@@ -52,14 +52,18 @@ class SplashActivity : AppCompatActivity() {
 //        }
     }
 
+
+
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        Log.d("testLaunch",it.toString())
         if (it.resultCode == Activity.RESULT_OK){
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            Log.d("testLaunch",task.toString())
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
@@ -90,15 +94,14 @@ class SplashActivity : AppCompatActivity() {
     private fun updateUI(user: FirebaseUser?){
         if (user != null) {
             val userInf: UserModel = UserModel(auth.currentUser?.displayName.toString(), auth.currentUser?.email.toString(), auth.currentUser?.photoUrl.toString())
-            Intent(this, MainActivity::class.java).apply {
-                this.putExtra("userInf",userInf)
-                startActivity(this)
-                finish()
-            }
+            startActivity(Intent(this, MainActivity::class.java).apply {
+                putExtra("userInf",userInf)
+            })
+            finish()
         }
     }
     companion object {
-        private const val TAG = "SplashActivity"
+        private const val TAG = "SSolRanApp"
         private const val RC_SIGN_IN = 9001
     }
 }

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "236669707553",
+    "firebase_url": "https://ssolrangapplication-default-rtdb.firebaseio.com",
     "project_id": "ssolrangapplication",
     "storage_bucket": "ssolrangapplication.appspot.com"
   },
@@ -13,6 +14,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "236669707553-pl85h23k7307ka1u5cnnrju5lhqsnbbl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ssolrangapplication",
+            "certificate_hash": "4adf40e680deee552594ba9fbc795496adcf2e15"
+          }
+        },
+        {
+          "client_id": "236669707553-upbtm8ogtcfkjoodal9scdbd5iqd74om.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ssolrangapplication",
+            "certificate_hash": "61564c229006382dbb2c4490377a57748477239f"
+          }
+        },
         {
           "client_id": "236669707553-9lcubp193jku39btv7rvlv5ug6f8quce.apps.googleusercontent.com",
           "client_type": 3
