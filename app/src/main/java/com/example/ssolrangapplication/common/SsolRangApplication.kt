@@ -2,7 +2,6 @@ package com.example.ssolrangapplication.common
 
 import android.app.Application
 import android.content.Context
-import com.example.ssolrangapplication.BuildConfig.SERVER_HTTP_URL
 import com.example.ssolrangapplication.BuildConfig
 import com.example.ssolrangapplication.common.utils.ImageLoader
 import com.example.ssolrangapplication.network.AddCookieInterceptor

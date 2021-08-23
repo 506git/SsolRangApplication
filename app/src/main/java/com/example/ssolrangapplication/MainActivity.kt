@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(findViewById(R.id.toolbar))
         val actionBar = supportActionBar
-        actionBar?.setHomeAsUpIndicator(R.drawable.icon_search)
+        actionBar?.setHomeAsUpIndicator(R.drawable.ic_dashboard_black_24dp)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 

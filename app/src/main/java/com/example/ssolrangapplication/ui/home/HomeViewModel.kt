@@ -11,7 +11,7 @@ class HomeViewModel() : BaseViewModel() {
 
 //    private val test = ObservableField<String>("")
     private val _text = MutableLiveData<String>().apply {
-        value = "Ttest"
+        value = "사랑해, 임해림"
     }
     val text: LiveData<String> = _text
 
