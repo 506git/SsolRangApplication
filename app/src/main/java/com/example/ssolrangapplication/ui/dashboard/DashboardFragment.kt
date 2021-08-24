@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.ssolrangapplication.MainActivity
 import com.example.ssolrangapplication.R
 import com.example.ssolrangapplication.databinding.FragmentDashboardBinding
 import org.koin.android.ext.android.bind
@@ -30,6 +31,7 @@ class DashboardFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         initView()
+
         return binding.root
     }
 

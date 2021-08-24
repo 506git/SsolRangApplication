@@ -18,6 +18,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.ssolrangapplication.common.model.UserModel
 import com.example.ssolrangapplication.common.utils.ImageLoader
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -69,6 +70,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_notifications -> getString(R.string.title_notifications)
                 else -> getString(R.string.title_home)
             })
+            openAppBar()
         }
+    }
+
+    private fun openAppBar(){
+        findViewById<AppBarLayout>(R.id.app_bar_layout).setExpanded(true,false)
+        findViewById<AppBarLayout>(R.id.app_bar_layout).stopNestedScroll()
     }
 }
