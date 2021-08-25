@@ -30,6 +30,7 @@ class DashboardFragment : Fragment() {
             viewModel = dashboardViewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
         initView()
 
         return binding.root

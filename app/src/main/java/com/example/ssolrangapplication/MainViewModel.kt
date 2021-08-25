@@ -1,6 +1,7 @@
 package com.example.ssolrangapplication
 
 import android.app.Application
+import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private val _title = MutableLiveData<String>().apply {
         value = application.getString(R.string.title_home)
     }
+
 
     private val _user = MutableLiveData<UserModel>()
 

@@ -1,6 +1,7 @@
 package com.example.ssolrangapplication.ui.home
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,12 @@ class CategoryAdapter(val categoryItemClick: (CategoryVO) -> Unit): RecyclerView
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val categoryName = itemView.findViewById<TextView>(R.id.category_name)
         fun bind(category: CategoryVO){
+            categoryName.apply {
+                text = category.name
+                elevation = 5f
+            }
             categoryName.text = category.name
+
             itemView.setOnClickListener {
                 categoryItemClick(category)
             }
@@ -36,7 +42,7 @@ class CategoryAdapter(val categoryItemClick: (CategoryVO) -> Unit): RecyclerView
     }
 
     fun setCategory(categorys: List<CategoryVO>){
-        this.category = categorys
+        this.category = categorys.sortedBy { it.count }.reversed()
         notifyDataSetChanged()
     }
 
