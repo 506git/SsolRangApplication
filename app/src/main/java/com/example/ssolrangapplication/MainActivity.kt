@@ -1,8 +1,11 @@
 package com.example.ssolrangapplication
 
-import android.content.DialogInterface
+import android.content.*
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import android.view.KeyEvent
@@ -12,17 +15,16 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.ssolrangapplication.common.model.UserModel
+import com.example.ssolrangapplication.common.service.MusicService
 import com.example.ssolrangapplication.common.utils.CustomFragmentManger
 import com.example.ssolrangapplication.common.utils.ImageLoader
 import com.example.ssolrangapplication.common.utils.SsolUtils
 import com.example.ssolrangapplication.ui.MusicPlayerFragment
-import com.example.ssolrangapplication.ui.player.ItemListDialogFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
@@ -30,8 +32,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -46,13 +46,39 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainViewModel: MainViewModel
     lateinit var behavior: BottomSheetBehavior<View>
     private var mediaPlayer : MediaPlayer? = null
-    var playing = false
-    var time = 0
+//    private lateinit var audioManger : AudioManager
+    var playing = true
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaPlayer?.release()
-        mediaPlayer = null
+    lateinit var mService: MusicService
+    private var mBound: Boolean = false
+    private var time: Int = 0
+    private val connection = object : ServiceConnection{
+        override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            mService = binder.getService()
+            mBound = true
+            mService.player?.let{
+                mediaPlayer = it
+            }
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            mBound = false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        bindService(Intent(this,MusicService::class.java),connection,Context.BIND_AUTO_CREATE)
+//        Intent(this,MusicService::class.java).also {
+//                intent -> bindService(intent,connection,Context.BIND_AUTO_CREATE)
+//        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindService(connection)
+        mBound = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,45 +87,72 @@ class MainActivity : AppCompatActivity() {
 
         val user = intent.getSerializableExtra("userInf") as UserModel
         initViewModel()
-        mediaPlayer = MediaPlayer.create(this@MainActivity, R.raw.sound).apply {
-            setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-        }
+//        mediaPlayer = MediaPlayer.create(this@MainActivity, R.raw.sound).apply {
+//            setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+//            setAudioAttributes(
+//                AudioAttributes.Builder()
+//                    .setUsage(AudioAttributes.USAGE_MEDIA)
+//                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                    .build()
+//            )
+//            isLooping = true
+//        }
+//        audioManger = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         mainViewModel.setUser(user.name, user.id, user.profile)
         val playProgress = findViewById<ProgressBar>(R.id.progress)
         playProgress.apply {
             isClickable = false
-            max = mediaPlayer?.duration!!
-            progress = mediaPlayer?.currentPosition!!
+
         }
 
         findViewById<ImageButton>(R.id.play).setOnClickListener {
-            if(!playing) {
-                mediaPlayer?.start()
-                playing = true
+            if(!mBound){
+                return@setOnClickListener
+            }
+            playProgress.max = mediaPlayer?.duration!!
+            if(mediaPlayer?.isPlaying == false) {
+                Log.d("testBOolena3", "time.toString()")
+                mService.musicStart()
                 CoroutineScope(Main).launch {
-                    launch(IO) {
-                        time = mediaPlayer?.currentPosition!!
+                    while (mediaPlayer?.isPlaying == true) {
+                        time = withContext(IO){
+                            mediaPlayer?.currentPosition!!
+                        }
                         delay(100)
-                        Log.d("TESTTIME",time.toString())
-                    }
-
-                    launch(Main) {
-                        playProgress.progress = time as Int
+                        playProgress.progress = time
                     }
                 }.start()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    startService(Intent(this,MusicService::class.java).apply {
+                        putExtra("notify",true)
+                    })
+                }
             } else {
-                mediaPlayer?.pause()
+                Log.d("testBOolena4", "time.toString()")
+                mService.musicStop()
                 playing = false
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    startService(Intent(this,MusicService::class.java).apply {
+                        putExtra("notify",false)
+                    })
+                }
             }
         }
 
         findViewById<ImageView>(R.id.profile).setOnClickListener {
-            SsolUtils.showCustomWindow(this,"알림","로그아웃하시겠습니까?","확인",false, { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                signOut()
-            }, { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
+            SsolUtils.showCustomWindow(
+                this,
+                "알림",
+                "로그아웃하시겠습니까?",
+                "확인",
+                false,
+                { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                    signOut()
+                },
+                { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
             )
 
         }
@@ -108,17 +161,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         behavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet)).apply {
-            this.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+            this.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                         val fragment = MusicPlayerFragment()
-                        CustomFragmentManger(this@MainActivity).addFragment(fragment,"musicPlayer")
+                        CustomFragmentManger(this@MainActivity).addFragment(fragment, "musicPlayer")
                     }
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    findViewById<View>(R.id.collapseView).animate().alpha(1.0f - slideOffset*2).duration = 0
-                    findViewById<View>(R.id.fragment_view).animate().alpha(slideOffset*2).duration = 0
+                    findViewById<View>(R.id.collapseView).animate()
+                        .alpha(1.0f - slideOffset * 2).duration = 0
+                    findViewById<View>(R.id.fragment_view).animate()
+                        .alpha(slideOffset * 2).duration = 0
                 }
             })
         }
@@ -177,7 +232,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        val googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
+        val googleSignInClient = GoogleSignIn.getClient(
+            this, GoogleSignInOptions.Builder(
+                GoogleSignInOptions.DEFAULT_SIGN_IN
+            ).build()
+        )
         googleSignInClient.signOut()
             .addOnCompleteListener(this, OnCompleteListener<Void?> {
                 FirebaseAuth.getInstance().signOut()
