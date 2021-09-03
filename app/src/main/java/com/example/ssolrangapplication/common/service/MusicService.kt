@@ -29,7 +29,7 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notify: Boolean? = intent?.extras?.getBoolean("notify")
         val channelId = "$packageName-${getString(R.string.app_name)}"
-        Log.d("TESTNOTIFY", notify.toString())
+      
         if(notify!!) {
 
             val mMainIntent = Intent(this, MainActivity::class.java)
