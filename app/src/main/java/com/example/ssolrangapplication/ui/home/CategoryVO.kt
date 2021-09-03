@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 @IgnoreExtraProperties
 data class CategoryVO(
     var name : String? = "",
-    var count : String? = "",
+    var count : Int? = 0,
     var menuId : String?
 )
 @IgnoreExtraProperties

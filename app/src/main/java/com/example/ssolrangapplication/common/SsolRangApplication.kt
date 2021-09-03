@@ -2,6 +2,7 @@ package com.example.ssolrangapplication.common
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.example.ssolrangapplication.BuildConfig
 import com.example.ssolrangapplication.common.utils.ImageLoader
 import com.example.ssolrangapplication.network.AddCookieInterceptor
@@ -24,7 +25,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.create
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class SsolRangApplication: Application() {
@@ -66,15 +66,15 @@ class SsolRangApplication: Application() {
                 addInterceptor(HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
                     override fun log(message: String) {
                         if (!message.startsWith("{") && !message.startsWith("[")) {
-                            Timber.tag("OkHttp").d(message)
+                            Log.d("OkHttp",message)
                             return
                         }
                         try {
-                            Timber.tag("OkHttp").d(
-                                GsonBuilder().setPrettyPrinting().create().toJson(
+                            Log.d("OkHttp", GsonBuilder().setPrettyPrinting().create().toJson(
                                 JsonParser().parse(message)))
                         } catch (m: JsonSyntaxException) {
-                            Timber.tag("OkHttp").d(message)
+                            Log.d("OkHttp",message)
+//                            Timber.tag("OkHttp").d(message)
                         }
                     }
 

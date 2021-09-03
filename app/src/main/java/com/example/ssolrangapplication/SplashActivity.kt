@@ -17,11 +17,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
@@ -41,15 +43,19 @@ class SplashActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener (OnCompleteListener { task ->
+            if(!task.isSuccessful){
+                Log.e("error", task.exception.toString())
+                return@OnCompleteListener
+            }
+
+            val token = task.result
+        })
+
         auth = Firebase.auth
         findViewById<SignInButton>(R.id.google_sign_btn).setOnClickListener {
             signIn()
         }
-
-//        Intent(this, MainActivity::class.java).apply {
-//            startActivity(this)
-//            finish()
-//        }
     }
 
 
